@@ -20,7 +20,7 @@ public class Transaction {
     public void signTransaction(String privateKey) {
         // 개인키로 트랜잭션 서명 (단순화를 위해 해시값으로 서명한다고 가정)
         this.signature = HashUtil.applySHA256(sender + receiver + amount + privateKey);
-    }
+    } 
 
     public boolean verifySignature(String publicKey) {
         // 송신자의 공개키로 서명 검증
