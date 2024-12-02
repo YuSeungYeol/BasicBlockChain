@@ -9,7 +9,7 @@ public class Block {
     String data;           // 블록에 저장될 데이터
     private ArrayList<Transaction> transactions; // 트랜잭션 리스트
     private long timestamp;        // 블록 생성 시간
-
+ 
     // 생성자
     public Block(String data, String previousHash) {
         this.data = data;
