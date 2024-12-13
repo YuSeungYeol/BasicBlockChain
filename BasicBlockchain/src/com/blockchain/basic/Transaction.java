@@ -10,7 +10,7 @@ public class Transaction {
         this.sender = sender;
         this.receiver = receiver;
         this.amount = amount;
-    } 
+    }
 
     @Override
     public String toString() {
