@@ -21,4 +21,20 @@ public class SmartContract {
     public Transaction getTransaction() {
         return transaction;
     }
+    
+    public static void executeConditionalTransaction(Transaction transaction) {
+        if (transaction.canExecute()) {
+            System.out.println("Smart Contract Executed: " + transaction);
+        } else {
+            System.out.println("Smart Contract Conditions Not Met: Transaction Pending");
+        }
+    }
+    
+    public static void executeOrRefund(Transaction transaction, String refundReceiver) {
+        if (transaction.canExecute()) {
+            System.out.println("Smart Contract Executed: " + transaction);
+        } else {
+            transaction.refund(refundReceiver);
+        }
+    }
 }
