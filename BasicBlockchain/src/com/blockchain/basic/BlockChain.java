@@ -1,6 +1,7 @@
 package com.blockchain.basic;
 
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 public class BlockChain {
     public static ArrayList<Block> blockchain = new ArrayList<>();
@@ -19,13 +20,23 @@ public class BlockChain {
 
         // 트랜잭션 추가
         secondBlock.addTransaction(new Transaction("Alice", "Bob", 20));
-        
-        // 스마트 계약 추가: 조건이 "approved"일 때 Bob -> Charlie로 10을 송금
-        SmartContract contract = new SmartContract("approved", new Transaction("Bob", "Charlie", 10));
-        secondBlock.addSmartContract(contract);
 
-        // 스마트 계약 실행 (조건을 "approved"로 설정)
-        secondBlock.executeSmartContracts("approved");
+        // 스마트 계약 추가: 다양한 조건 처리
+        SmartContract contract1 = new SmartContract(
+            input -> input.equals("approved") && input.length() > 5,
+            new Transaction("Alice", "Bob", 15)
+        );
+        SmartContract contract2 = new SmartContract(
+            input -> input.contains("valid"),
+            new Transaction("Bob", "Charlie", 10)
+        );
+
+        // 블록에 스마트 계약 추가
+        secondBlock.addSmartContract(contract1);
+        secondBlock.addSmartContract(contract2);
+
+        // 조건에 따라 스마트 계약 실행
+        secondBlock.executeSmartContracts("approved_and_valid");
 
         secondBlock.mineBlock(difficulty);
         blockchain.add(secondBlock);  // 블록체인에 두 번째 블록 추가

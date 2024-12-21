@@ -1,25 +1,28 @@
 package com.blockchain.basic;
 
+import java.util.function.Predicate;
+
 public class SmartContract {
-    private String condition;
-    private Transaction transaction; // 조건이 충족되면 실행할 트랜잭션
+    private Predicate<String> condition; // 조건을 처리하는 Predicate
+    private Transaction action; // 조건이 만족될 때 실행할 트랜잭션
 
-    public SmartContract(String condition, Transaction transaction) {
+    public SmartContract(Predicate<String> condition, Transaction action) {
         this.condition = condition;
-        this.transaction = transaction;
+        this.action = action;
     }
 
-    // 스마트 계약 실행 메서드
-    public boolean execute(String currentState) {
-        if (currentState.equals(condition)) {
-            System.out.println("Smart Contract Executed: " + transaction);
+    public boolean execute(String input) {
+        if (condition.test(input)) {
+            System.out.println("Smart Contract Executed: " + action.getSender() + " -> " + action.getReceiver() + ": " + action.getAmount());
             return true;
+        } else {
+            System.out.println("Smart Contract condition not met.");
+            return false;
         }
-        return false;
     }
 
-    public Transaction getTransaction() {
-        return transaction;
+    public Transaction getAction() {
+        return action;
     }
     
     public static void executeConditionalTransaction(Transaction transaction) {

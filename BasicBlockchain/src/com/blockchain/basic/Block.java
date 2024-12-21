@@ -7,8 +7,8 @@ public class Block {
     public String hash;            // 현재 블록의 해시
     public String previousHash;    // 이전 블록의 해시
     String data;           // 블록에 저장될 데이터
-    private ArrayList<Transaction> transactions; // 트랜잭션 리스트
-    private ArrayList<SmartContract> smartContracts; // 스마트 계약 리스트
+    private ArrayList<Transaction> transactions = new ArrayList<>();
+    private ArrayList<SmartContract> smartContracts = new ArrayList<>();
     private long timestamp;        // 블록 생성 시간
  
     // 생성자
@@ -52,14 +52,12 @@ public class Block {
     }
 
     // 스마트 계약 실행 메서드
-    public void executeSmartContracts(String currentState) {
-        for (SmartContract contract : smartContracts) {
-            if (contract.execute(currentState)) {
-                addTransaction(contract.getTransaction());
-            }
+    public void executeSmartContracts(String input) {
+        for (SmartContract sc : smartContracts) {
+            sc.execute(input);
         }
     }
-
+    
     // 블록 데이터 출력
     public void printBlockData() {
         System.out.println("Block Hash: " + hash);
@@ -68,8 +66,6 @@ public class Block {
             System.out.println("  Transaction: " + t);
         }
     }
+   
     
-    
-    
-
 }
