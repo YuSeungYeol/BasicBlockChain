@@ -18,6 +18,21 @@ public class Transaction {
         this.conditionMet = false;
     }
     
+    // 송신자를 반환하는 메서드
+    public String getSender() {
+        return sender;
+    }
+
+    // 수신자를 반환하는 메서드
+    public String getReceiver() {
+        return receiver;
+    }
+
+    // 거래 금액을 반환하는 메서드
+    public float getAmount() {
+        return amount;
+    }
+    
     public void signTransaction(String privateKey) {
         // 개인키로 트랜잭션 서명 (단순화를 위해 해시값으로 서명한다고 가정)
         this.signature = HashUtil.applySHA256(sender + receiver + amount + privateKey);
