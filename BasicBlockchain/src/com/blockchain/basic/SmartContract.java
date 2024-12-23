@@ -20,6 +20,20 @@ public class SmartContract {
             return false;
         }
     }
+    
+    // 외부 데이터를 사용하여 조건을 평가
+    public boolean executeWithExternalData() {
+        double exchangeRate = ExternalDataFetcher.fetchExchangeRate(); // 외부 데이터를 가져옴
+        System.out.println("Fetched Exchange Rate: " + exchangeRate);
+
+        if (exchangeRate >= 1000) {
+            System.out.println("Smart Contract Executed: " + action.getSender() + " -> " + action.getReceiver() + ": " + action.getAmount());
+            return true;
+        } else {
+            System.out.println("Smart Contract condition not met (Exchange rate below threshold).");
+            return false;
+        }
+    }
 
     public Transaction getAction() {
         return action;
@@ -40,4 +54,5 @@ public class SmartContract {
             transaction.refund(refundReceiver);
         }
     }
+    
 }
