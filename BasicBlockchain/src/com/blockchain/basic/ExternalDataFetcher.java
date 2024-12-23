@@ -9,5 +9,5 @@ public class ExternalDataFetcher {
         // 예: https://api.exchangerate-api.com/v4/latest/USD
         Random random = new Random();
         return 950 + (random.nextDouble() * 200); // 950 ~ 1150 사이의 임의 환율
-    }
+    } 
 }
