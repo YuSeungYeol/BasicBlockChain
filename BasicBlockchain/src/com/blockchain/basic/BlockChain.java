@@ -109,38 +109,48 @@ public class BlockChain {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("Enter a command (balance, block, transactions, all, exit):");
-            String command = scanner.nextLine().trim().toLowerCase();  // 입력 값에 공백 제거 및 소문자 처리
-            System.out.println("Received command: " + command);  // 디버깅 출력
+            String commandLine = scanner.nextLine().trim().toLowerCase();  // 전체 입력을 받음
+            System.out.println("Received command: " + commandLine);  // 디버깅
+
+            String[] commandParts = commandLine.split(" ");  // 명령어와 파라미터를 분리
+            String command = commandParts[0];  // 첫 번째는 명령어
+            String parameter = (commandParts.length > 1) ? commandParts[1] : "";  // 두 번째는 파라미터
 
             switch (command) {
                 case "balance":
-                    System.out.println("Enter user name:");
-                    String user = scanner.nextLine().trim();
-                    System.out.println("Getting balance for user: " + user);  // 디버깅
-                    double balance = getBalance(user);
-                    System.out.println("Balance of " + user + ": " + balance);
+                    if (parameter.isEmpty()) {
+                        System.out.println("Please enter a user name for balance query.");
+                    } else {
+                        System.out.println("Getting balance for user: " + parameter);  // 디버깅
+                        double balance = getBalance(parameter);
+                        System.out.println("Balance of " + parameter + ": " + balance);
+                    }
                     break;
 
                 case "block":
-                    System.out.println("Enter block hash:");
-                    String hash = scanner.nextLine().trim();
-                    System.out.println("Looking for block with hash: " + hash);  // 디버깅
-                    Block block = getBlockByHash(hash);
-                    if (block != null) {
-                        block.printBlockData();
+                    if (parameter.isEmpty()) {
+                        System.out.println("Please enter a block hash for block query.");
+                    } else {
+                        System.out.println("Looking for block with hash: " + parameter);  // 디버깅
+                        Block block = getBlockByHash(parameter);
+                        if (block != null) {
+                            block.printBlockData();
+                        }
                     }
                     break;
 
                 case "transactions":
-                    System.out.println("Enter user name:");
-                    String userTx = scanner.nextLine().trim();
-                    System.out.println("Getting transactions for user: " + userTx);  // 디버깅
-                    ArrayList<Transaction> transactions = getTransactionsByUser(userTx);
-                    if (transactions.isEmpty()) {
-                        System.out.println("No transactions found for " + userTx);
+                    if (parameter.isEmpty()) {
+                        System.out.println("Please enter a user name for transaction query.");
                     } else {
-                        for (Transaction tx : transactions) {
-                            System.out.println(tx);
+                        System.out.println("Getting transactions for user: " + parameter);  // 디버깅
+                        ArrayList<Transaction> transactions = getTransactionsByUser(parameter);
+                        if (transactions.isEmpty()) {
+                            System.out.println("No transactions found for " + parameter);
+                        } else {
+                            for (Transaction tx : transactions) {
+                                System.out.println(tx);
+                            }
                         }
                     }
                     break;
