@@ -62,12 +62,22 @@ public class BlockChain {
     // 사용자 잔고 조회
     public static double getBalance(String user) {
         double balance = 0;
+        user = user.toLowerCase();  // 대소문자 구분 없이 비교하도록 소문자로 변환
+
         for (Block block : blockchain) {
             for (Transaction tx : block.getTransactions()) {
-                if (tx.getReceiver().equals(user)) {
+                System.out.println("Checking transaction: Sender: " + tx.getSender() + " Receiver: " + tx.getReceiver() + " Amount: " + tx.getAmount());
+
+                // 'System' 송금 처리
+                if (tx.getSender().equals("System") && tx.getReceiver().toLowerCase().equals(user)) {
                     balance += tx.getAmount();
                 }
-                if (tx.getSender().equals(user)) {
+
+                // 송금 및 수신 처리
+                if (tx.getReceiver().toLowerCase().equals(user)) {
+                    balance += tx.getAmount();
+                }
+                if (tx.getSender().toLowerCase().equals(user)) {
                     balance -= tx.getAmount();
                 }
             }
