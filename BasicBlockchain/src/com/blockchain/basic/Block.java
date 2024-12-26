@@ -2,6 +2,7 @@ package com.blockchain.basic;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Block {
     public String hash;            // 현재 블록의 해시
@@ -67,5 +68,8 @@ public class Block {
         }
     }
    
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
     
 }
