@@ -109,41 +109,58 @@ public class BlockChain {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("Enter a command (balance, block, transactions, all, exit):");
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().trim().toLowerCase();  // 입력 값에 공백 제거 및 소문자 처리
+            System.out.println("Received command: " + command);  // 디버깅 출력
+
             switch (command) {
                 case "balance":
                     System.out.println("Enter user name:");
-                    String user = scanner.nextLine();
-                    System.out.println("Balance of " + user + ": " + getBalance(user));
+                    String user = scanner.nextLine().trim();
+                    System.out.println("Getting balance for user: " + user);  // 디버깅
+                    double balance = getBalance(user);
+                    System.out.println("Balance of " + user + ": " + balance);
                     break;
+
                 case "block":
                     System.out.println("Enter block hash:");
-                    String hash = scanner.nextLine();
+                    String hash = scanner.nextLine().trim();
+                    System.out.println("Looking for block with hash: " + hash);  // 디버깅
                     Block block = getBlockByHash(hash);
                     if (block != null) {
                         block.printBlockData();
                     }
                     break;
+
                 case "transactions":
                     System.out.println("Enter user name:");
-                    String userTx = scanner.nextLine();
+                    String userTx = scanner.nextLine().trim();
+                    System.out.println("Getting transactions for user: " + userTx);  // 디버깅
                     ArrayList<Transaction> transactions = getTransactionsByUser(userTx);
-                    for (Transaction tx : transactions) {
-                        System.out.println(tx);
+                    if (transactions.isEmpty()) {
+                        System.out.println("No transactions found for " + userTx);
+                    } else {
+                        for (Transaction tx : transactions) {
+                            System.out.println(tx);
+                        }
                     }
                     break;
+
                 case "all":
+                    System.out.println("Displaying all blocks:");  // 디버깅
                     for (Block b : getAllBlocks()) {
                         b.printBlockData();
                     }
                     break;
+
                 case "exit":
                     System.out.println("Exiting...");
                     scanner.close();
                     return;
+
                 default:
-                    System.out.println("Unknown command!");
+                    System.out.println("Unknown command! Please enter a valid command.");
             }
         }
     }
+
 }
