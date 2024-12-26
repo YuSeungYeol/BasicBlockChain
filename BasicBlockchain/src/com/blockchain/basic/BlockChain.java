@@ -108,7 +108,7 @@ public class BlockChain {
     public static void handleCommands() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("Enter a command (balance, block, transactions, all, exit):");
+            System.out.println("Enter a command (balance, block, transactions, all, check, exit):");
             String commandLine = scanner.nextLine().trim().toLowerCase();  // 전체 입력을 받음
             System.out.println("Received command: " + commandLine);  // 디버깅
 
@@ -162,6 +162,12 @@ public class BlockChain {
                     }
                     break;
 
+                case "check":
+                    // 블록체인 상태 점검
+                    System.out.println("Checking blockchain...");
+                    printBlockchain();  // 모든 트랜잭션 출력
+                    break;
+
                 case "exit":
                     System.out.println("Exiting...");
                     scanner.close();
@@ -173,4 +179,12 @@ public class BlockChain {
         }
     }
 
+    // 블록체인 내 모든 트랜잭션 출력
+    public static void printBlockchain() {
+        for (Block block : blockchain) {
+            for (Transaction tx : block.getTransactions()) {
+                System.out.println("Sender: " + tx.getSender() + " Receiver: " + tx.getReceiver() + " Amount: " + tx.getAmount());
+            }
+        }
+    }
 }
