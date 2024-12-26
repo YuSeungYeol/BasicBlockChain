@@ -1,6 +1,7 @@
 package com.blockchain.basic;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.function.Predicate;
 
 public class BlockChain {
@@ -10,42 +11,22 @@ public class BlockChain {
         int difficulty = 4; // 난이도 설정
 
         // 제네시스 블록 생성
-        Block genesisBlock = new Block("0", "0");  // 첫 번째 블록, previousHash는 "0"
+        Block genesisBlock = new Block("0", "0");
         genesisBlock.addTransaction(new Transaction("System", "Alice", 50));
         genesisBlock.mineBlock(difficulty);
-        blockchain.add(genesisBlock);  // 블록체인에 제네시스 블록 추가
+        blockchain.add(genesisBlock);
 
         // 두 번째 블록 생성
-        Block secondBlock = new Block("0", genesisBlock.hash);  // 이전 블록의 해시를 previousHash로 사용
-
-        // 트랜잭션 추가
+        Block secondBlock = new Block("0", genesisBlock.hash);
         secondBlock.addTransaction(new Transaction("Alice", "Bob", 20));
-
-        // 스마트 계약 추가: 다양한 조건 처리
-        SmartContract contract1 = new SmartContract(
-            input -> input.equals("approved") && input.length() > 5,
-            new Transaction("Alice", "Bob", 15)
-        );
-        SmartContract contract2 = new SmartContract(
-            input -> input.contains("valid"),
-            new Transaction("Bob", "Charlie", 10)
-        );
-
-        // 블록에 스마트 계약 추가
-        secondBlock.addSmartContract(contract1);
-        secondBlock.addSmartContract(contract2);
-
-        // 조건에 따라 스마트 계약 실행
-        secondBlock.executeSmartContracts("approved_and_valid");
-
         secondBlock.mineBlock(difficulty);
-        blockchain.add(secondBlock);  // 블록체인에 두 번째 블록 추가
+        blockchain.add(secondBlock);
 
         // 세 번째 블록 생성
-        Block thirdBlock = new Block("0", secondBlock.hash);  // 이전 블록의 해시를 previousHash로 사용
+        Block thirdBlock = new Block("0", secondBlock.hash);
         thirdBlock.addTransaction(new Transaction("Charlie", "Dave", 2));
         thirdBlock.mineBlock(difficulty);
-        blockchain.add(thirdBlock);  // 블록체인에 세 번째 블록 추가
+        blockchain.add(thirdBlock);
 
         // 블록 데이터 출력
         for (Block block : blockchain) {
@@ -54,6 +35,9 @@ public class BlockChain {
 
         // 블록체인 유효성 검증
         System.out.println("Is blockchain valid? " + isChainValid());
+
+        // 명령어 핸들러 실행
+        handleCommands();
     }
 
     // 블록체인 유효성 검사 메서드
@@ -62,18 +46,104 @@ public class BlockChain {
             Block currentBlock = blockchain.get(i);
             Block previousBlock = blockchain.get(i - 1);
 
-            // 현재 블록의 해시가 일치하는지 확인
             if (!currentBlock.hash.equals(currentBlock.calculateHash())) {
                 System.out.println("Current Block's hash is invalid!");
                 return false;
             }
 
-            // 이전 블록의 해시가 일치하는지 확인
             if (!currentBlock.previousHash.equals(previousBlock.hash)) {
                 System.out.println("Previous Block's hash doesn't match!");
                 return false;
             }
         }
         return true;
+    }
+
+    // 사용자 잔고 조회
+    public static double getBalance(String user) {
+        double balance = 0;
+        for (Block block : blockchain) {
+            for (Transaction tx : block.getTransactions()) {
+                if (tx.getReceiver().equals(user)) {
+                    balance += tx.getAmount();
+                }
+                if (tx.getSender().equals(user)) {
+                    balance -= tx.getAmount();
+                }
+            }
+        }
+        return balance;
+    }
+
+    // 블록 해시로 블록 조회
+    public static Block getBlockByHash(String hash) {
+        for (Block block : blockchain) {
+            if (block.hash.equals(hash)) {
+                return block;
+            }
+        }
+        System.out.println("Block with hash " + hash + " not found.");
+        return null;
+    }
+
+    // 사용자 트랜잭션 조회
+    public static ArrayList<Transaction> getTransactionsByUser(String user) {
+        ArrayList<Transaction> userTransactions = new ArrayList<>();
+        for (Block block : blockchain) {
+            for (Transaction tx : block.getTransactions()) {
+                if (tx.getSender().equals(user) || tx.getReceiver().equals(user)) {
+                    userTransactions.add(tx);
+                }
+            }
+        }
+        return userTransactions;
+    }
+
+    // 전체 블록 데이터 반환
+    public static ArrayList<Block> getAllBlocks() {
+        return blockchain;
+    }
+
+    // 명령어 핸들러
+    public static void handleCommands() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Enter a command (balance, block, transactions, all, exit):");
+            String command = scanner.nextLine();
+            switch (command) {
+                case "balance":
+                    System.out.println("Enter user name:");
+                    String user = scanner.nextLine();
+                    System.out.println("Balance of " + user + ": " + getBalance(user));
+                    break;
+                case "block":
+                    System.out.println("Enter block hash:");
+                    String hash = scanner.nextLine();
+                    Block block = getBlockByHash(hash);
+                    if (block != null) {
+                        block.printBlockData();
+                    }
+                    break;
+                case "transactions":
+                    System.out.println("Enter user name:");
+                    String userTx = scanner.nextLine();
+                    ArrayList<Transaction> transactions = getTransactionsByUser(userTx);
+                    for (Transaction tx : transactions) {
+                        System.out.println(tx);
+                    }
+                    break;
+                case "all":
+                    for (Block b : getAllBlocks()) {
+                        b.printBlockData();
+                    }
+                    break;
+                case "exit":
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Unknown command!");
+            }
+        }
     }
 }
