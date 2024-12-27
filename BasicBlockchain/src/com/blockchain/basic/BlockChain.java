@@ -62,22 +62,21 @@ public class BlockChain {
     // 사용자 잔고 조회
     public static double getBalance(String user) {
         double balance = 0;
-        user = user.toLowerCase();  // 대소문자 구분 없이 비교하도록 소문자로 변환
+        user = user.toLowerCase(); // 입력값 소문자 변환
 
         for (Block block : blockchain) {
             for (Transaction tx : block.getTransactions()) {
+                String sender = tx.getSender().toLowerCase();  // 송신자 소문자 변환
+                String receiver = tx.getReceiver().toLowerCase();  // 수신자 소문자 변환
+
                 System.out.println("Checking transaction: Sender: " + tx.getSender() + " Receiver: " + tx.getReceiver() + " Amount: " + tx.getAmount());
 
-                // 'System' 송금 처리
-                if (tx.getSender().equals("System") && tx.getReceiver().toLowerCase().equals(user)) {
+                if (receiver.equals(user)) {
+                    System.out.println("Matched as receiver: " + receiver);
                     balance += tx.getAmount();
                 }
-
-                // 송금 및 수신 처리
-                if (tx.getReceiver().toLowerCase().equals(user)) {
-                    balance += tx.getAmount();
-                }
-                if (tx.getSender().toLowerCase().equals(user)) {
+                if (sender.equals(user)) {
+                    System.out.println("Matched as sender: " + sender);
                     balance -= tx.getAmount();
                 }
             }
@@ -85,16 +84,29 @@ public class BlockChain {
         return balance;
     }
 
-    // 블록 해시로 블록 조회
-    public static Block getBlockByHash(String hash) {
+    // 블록 해시 또는 번호로 블록 조회
+    public static Block getBlockByIdentifier(String identifier) {
+        // 블록 해시로 조회
         for (Block block : blockchain) {
-            if (block.hash.equals(hash)) {
+            if (block.hash.equals(identifier)) {
                 return block;
             }
         }
-        System.out.println("Block with hash " + hash + " not found.");
+
+        // 블록 번호로 조회
+        try {
+            int blockNumber = Integer.parseInt(identifier); // identifier를 숫자로 변환
+            if (blockNumber >= 0 && blockNumber < blockchain.size()) {
+                return blockchain.get(blockNumber); // 해당 번호의 블록 반환
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid block identifier. Must be hash or numeric index.");
+        }
+
+        System.out.println("Block with identifier " + identifier + " not found.");
         return null;
     }
+
 
     // 사용자 트랜잭션 조회
     public static ArrayList<Transaction> getTransactionsByUser(String user) {
@@ -139,10 +151,10 @@ public class BlockChain {
 
                 case "block":
                     if (parameter.isEmpty()) {
-                        System.out.println("Please enter a block hash for block query.");
+                        System.out.println("Please enter a block identifier (hash or number) for block query.");
                     } else {
-                        System.out.println("Looking for block with hash: " + parameter);  // 디버깅
-                        Block block = getBlockByHash(parameter);
+                        System.out.println("Looking for block with identifier: " + parameter);
+                        Block block = getBlockByIdentifier(parameter); // 해시 또는 번호로 블록 조회
                         if (block != null) {
                             block.printBlockData();
                         }
