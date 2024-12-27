@@ -9,13 +9,15 @@ public class Transaction {
     private String signature; // 서명 추가
     private Date executionDate; // 특정 날짜 조건 추가
     private boolean conditionMet; // 조건 충족 여부
+    private double fee; // 수수료
 
-    public Transaction(String sender, String receiver, float amount) {
+    public Transaction(String sender, String receiver, float amount, double fee) {
         this.sender = sender;
         this.receiver = receiver;
         this.amount = amount;
         this.executionDate = executionDate;
         this.conditionMet = false;
+        this.fee = fee;
     }
     
     // 송신자를 반환하는 메서드
@@ -31,6 +33,11 @@ public class Transaction {
     // 거래 금액을 반환하는 메서드
     public float getAmount() {
         return amount;
+    }
+    
+    // 수수료 반환
+    public double getFee() {
+        return fee;  
     }
     
     public void signTransaction(String privateKey) {
@@ -59,6 +66,6 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return sender + " -> " + receiver + ": " + amount;
+        return "Transaction{sender=" + sender + ", receiver=" + receiver + ", amount=" + amount + ", fee=" + fee + "}";
     }
 }

@@ -12,19 +12,19 @@ public class BlockChain {
 
         // 제네시스 블록 생성
         Block genesisBlock = new Block("0", "0");
-        genesisBlock.addTransaction(new Transaction("System", "Alice", 50));
+        genesisBlock.addTransaction(new Transaction("System", "Alice", 50, 0.0));
         genesisBlock.mineBlock(difficulty);
         blockchain.add(genesisBlock);
 
         // 두 번째 블록 생성
         Block secondBlock = new Block("0", genesisBlock.hash);
-        secondBlock.addTransaction(new Transaction("Alice", "Bob", 20));
+        secondBlock.addTransaction(new Transaction("Alice", "Bob", 20, 0.0));
         secondBlock.mineBlock(difficulty);
         blockchain.add(secondBlock);
 
         // 세 번째 블록 생성
         Block thirdBlock = new Block("0", secondBlock.hash);
-        thirdBlock.addTransaction(new Transaction("Charlie", "Dave", 2));
+        thirdBlock.addTransaction(new Transaction("Charlie", "Dave", 2, 0.0));
         thirdBlock.mineBlock(difficulty);
         blockchain.add(thirdBlock);
 
@@ -69,20 +69,21 @@ public class BlockChain {
                 String sender = tx.getSender().toLowerCase();  // 송신자 소문자 변환
                 String receiver = tx.getReceiver().toLowerCase();  // 수신자 소문자 변환
 
-                System.out.println("Checking transaction: Sender: " + tx.getSender() + " Receiver: " + tx.getReceiver() + " Amount: " + tx.getAmount());
+                System.out.println("Checking transaction: Sender: " + tx.getSender() + " Receiver: " + tx.getReceiver() + " Amount: " + tx.getAmount() + " Fee: " + tx.getFee());
 
                 if (receiver.equals(user)) {
                     System.out.println("Matched as receiver: " + receiver);
-                    balance += tx.getAmount();
+                    balance += tx.getAmount();  // 수신자는 금액 증가
                 }
                 if (sender.equals(user)) {
                     System.out.println("Matched as sender: " + sender);
-                    balance -= tx.getAmount();
+                    balance -= (tx.getAmount() + tx.getFee());  // 송신자는 금액 및 수수료 차감
                 }
             }
         }
         return balance;
     }
+
 
     // 블록 해시 또는 번호로 블록 조회
     public static Block getBlockByIdentifier(String identifier) {
