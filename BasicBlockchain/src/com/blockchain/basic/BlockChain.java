@@ -111,15 +111,19 @@ public class BlockChain {
     // 사용자 트랜잭션 조회
     public static ArrayList<Transaction> getTransactionsByUser(String user) {
         ArrayList<Transaction> userTransactions = new ArrayList<>();
+        String targetUser = user.toLowerCase(); // 입력값 소문자 변환
         for (Block block : blockchain) {
             for (Transaction tx : block.getTransactions()) {
-                if (tx.getSender().equals(user) || tx.getReceiver().equals(user)) {
+                String sender = tx.getSender().toLowerCase();  // 송신자 소문자 변환
+                String receiver = tx.getReceiver().toLowerCase();  // 수신자 소문자 변환
+                if (sender.equals(targetUser) || receiver.equals(targetUser)) {
                     userTransactions.add(tx);
                 }
             }
         }
         return userTransactions;
     }
+
 
     // 전체 블록 데이터 반환
     public static ArrayList<Block> getAllBlocks() {
