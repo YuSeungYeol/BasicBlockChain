@@ -10,7 +10,7 @@ public class Transaction {
     private Date executionDate; // 특정 날짜 조건 추가
     private boolean conditionMet; // 조건 충족 여부
     private double fee; // 수수료
-
+ 
     public Transaction(String sender, String receiver, float amount, double fee) {
         this.sender = sender;
         this.receiver = receiver;
