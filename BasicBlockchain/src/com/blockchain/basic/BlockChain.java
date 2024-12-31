@@ -93,7 +93,7 @@ public class BlockChain {
                 return block;
             }
         }
-  
+ 
         // 블록 번호로 조회
         try {
             int blockNumber = Integer.parseInt(identifier); // identifier를 숫자로 변환
