@@ -63,7 +63,7 @@ public class Block {
             sc.execute(input);
         }
     }
-   
+  
     // 블록 데이터 출력
     public void printBlockData() {
         System.out.println("Block Hash: " + hash);
