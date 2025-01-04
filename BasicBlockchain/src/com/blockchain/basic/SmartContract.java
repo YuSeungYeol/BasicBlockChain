@@ -34,7 +34,7 @@ public class SmartContract {
             return false;
         }
     }
- 
+  
     public Transaction getAction() {
         return action;
     }
