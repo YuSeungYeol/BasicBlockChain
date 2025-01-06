@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class BlockChainManager {
     private static final String BLOCKCHAIN_FILE = "blockchain.json";
