@@ -11,7 +11,7 @@ public class Block {
     private ArrayList<Transaction> transactions = new ArrayList<>();
     private ArrayList<SmartContract> smartContracts = new ArrayList<>();
     private long timestamp;        // 블록 생성 시간
-    
+
     // 새 필드 추가
     private static final double BLOCK_REWARD = 50; // 채굴 보상 (예: 50 암호화폐)
     private double totalFees = 0;  // 트랜잭션 수수료 합산
