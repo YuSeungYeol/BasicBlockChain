@@ -10,7 +10,7 @@ public class SmartContract {
         this.condition = condition;
         this.action = action;
     }
-
+ 
     public boolean execute(String input) {
         if (condition.test(input)) {
             System.out.println("Smart Contract Executed: " + action.getSender() + " -> " + action.getReceiver() + ": " + action.getAmount());
