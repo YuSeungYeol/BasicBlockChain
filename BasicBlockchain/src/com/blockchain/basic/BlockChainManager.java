@@ -22,7 +22,7 @@ public class BlockChainManager {
             e.printStackTrace();
         }
     }
-
+ 
     // JSON 파일에서 블록체인을 불러오기
     public static List<Block> loadBlockchain() {
         try (FileReader reader = new FileReader(BLOCKCHAIN_FILE)) {
