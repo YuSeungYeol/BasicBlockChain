@@ -1,8 +1,14 @@
 package com.blockchain.basic;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Block {
     public String hash;            // 현재 블록의 해시
@@ -15,7 +21,13 @@ public class Block {
     // 새 필드 추가
     private static final double BLOCK_REWARD = 50; // 채굴 보상 (예: 50 암호화폐)
     private double totalFees = 0;  // 트랜잭션 수수료 합산
- 
+    
+    // 이전 데이터 암호화 및 복호화
+    private String encryptedData;
+    private SecretKey encryptionKey;
+    private static final String ALGORITHM = "AES";  // 또는 "AES/ECB/PKCS5Padding" 같은 특정 모드와 패딩을 지정
+
+    
     // 생성자
     public Block(String data, String previousHash) {
         this.data = data;
@@ -91,6 +103,40 @@ public class Block {
         Transaction rewardTransaction = new Transaction("System", "Miner", reward, 0.0);  // 보상 트랜잭션, 수수료는 0
         this.addTransaction(rewardTransaction);  // 보상 트랜잭션을 블록에 추가
         System.out.println("Miner rewarded with: " + reward);
+    }
+    
+    // 키 생성
+    public static SecretKey generateKey() throws Exception {
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM);
+        keyGenerator.init(128);
+        return keyGenerator.generateKey();
+    }
+
+    // 암호화
+    public static String encrypt(String data, SecretKey key) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encryptedData = cipher.doFinal(data.getBytes());
+        return Base64.getEncoder().encodeToString(encryptedData);
+    }
+
+    // 복호화
+    public static String decrypt(String encryptedData, SecretKey key) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decodedData = Base64.getDecoder().decode(encryptedData);
+        byte[] originalData = cipher.doFinal(decodedData);
+        return new String(originalData);
+    }
+    
+    public String getDecryptedData() throws Exception {
+        return CryptoUtil.decrypt(this.encryptedData, this.encryptionKey);
+    }
+
+    // 기존 블록 검증 메서드 수정 필요
+    public boolean isValid() {
+		return false;
+        // 복호화된 데이터로 검증 로직 추가
     }
 
 }
