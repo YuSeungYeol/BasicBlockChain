@@ -131,7 +131,7 @@ public class Block {
     
     public String getDecryptedData() throws Exception {
         return CryptoUtil.decrypt(this.encryptedData, this.encryptionKey);
-    }
+    } 
 
     // 기존 블록 검증 메서드 수정 필요
     public boolean isValid() {
